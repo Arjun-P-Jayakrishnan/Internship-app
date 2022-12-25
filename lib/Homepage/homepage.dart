@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_do/services/auth.dart';
 import 'package:task_do/services/databaseFirebase.dart';
-import 'package:task_do/shared/loading.dart';
 import 'package:task_do/shared/login_credentials.dart';
 
 import '../models/task.dart';
-import '../models/user_model.dart';
 import '../shared/constants.dart';
 import 'TaskList.dart';
 
@@ -54,6 +51,7 @@ class _HomepageState extends State<Homepage> {
     loadUserId();
   }
 
+  String _taskData="Task Details";
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +70,7 @@ class _HomepageState extends State<Homepage> {
             key:_formKey,
             child: Row(
               children: [
+                SizedBox(width:10.0),
                 Expanded(child: TextFormField(
                   decoration: inputDecoration,
                   validator: (value){
@@ -82,14 +81,19 @@ class _HomepageState extends State<Homepage> {
                       return null;
                     }
                   },
+                  onChanged: (val){
+                    setState(() {
+                      _taskData=val;
+                    });
+                  },
                 )),
+                SizedBox(width:10.0,),
                 FloatingActionButton(
                     child: Icon(Icons.add),
                     onPressed: () async{
                       if(_formKey.currentState!.validate()) {
 
-                        dynamic result = await DatabaseServices(
-                            uid: LoginCredentials.LoginId).addTask("Yep");
+                        dynamic result = await DatabaseServices().addTask(_taskData);
                       }
                       } )
               ],

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 
 
@@ -12,8 +11,6 @@ import '../models/user_model.dart';
 
 class DatabaseServices{
 
-  final String uid;
-  DatabaseServices({required this.uid});
 
 
 
@@ -40,24 +37,6 @@ class DatabaseServices{
     return await taskCollection.doc(docId).delete();
   }
 
-
-  //Snapshot details
-  UserData _userDataFromSnapshot(DocumentSnapshot snapshot){
-
-    print("userdata ${snapshot}");
-
-    return UserData(
-      uid:"",
-      task:"Task 1",
-    );
-
-  }
-
-  Stream<UserData> get userData{
-
-    print("user data ${taskCollection.doc(uid).snapshots().map(_userDataFromSnapshot)}");
-    return taskCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
-  }
 
 }
 

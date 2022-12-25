@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:task_do/services/databaseFirebase.dart';
-import 'package:task_do/shared/login_credentials.dart';
-
 import '../models/task.dart';
 
 
 
 
-class TaskTile extends StatelessWidget {
 
+
+
+
+
+class TaskTile extends StatefulWidget {
   final Task task;
   TaskTile({required this.task});
 
+  @override
+  State<TaskTile> createState() => _TaskTileState();
+}
 
 
+
+class _TaskTileState extends State<TaskTile> {
+
+
+
+  String _taskDetails="";
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +36,15 @@ class TaskTile extends StatelessWidget {
           leading: Icon(Icons.done),
           title: SizedBox(
             child: TextFormField(
-              initialValue: "${task.taskLabel}",
-              readOnly:true,
+              initialValue: "${widget.task.taskLabel}",
+              onChanged: (val){
+                setState((){
+                      _taskDetails=val;
+                });
+              },
+              onTapOutside: (val) async{
+                dynamic result= await DatabaseServices().updateTask(_taskDetails, widget.task.docId);
+              },
             ),
           ),
           trailing: SizedBox(
@@ -37,14 +55,14 @@ class TaskTile extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () async{
-                    dynamic result= await DatabaseServices(uid: LoginCredentials.LoginId).updateTask("Hello",task.docId);
+                    dynamic result= await DatabaseServices().updateTask(_taskDetails,widget.task.docId);
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async{
-                      dynamic result =await DatabaseServices(uid:LoginCredentials.LoginId).deleteTask(task.docId);
-                  })
+                    icon: Icon(Icons.delete),
+                    onPressed: () async{
+                      dynamic result =await DatabaseServices().deleteTask(widget.task.docId);
+                    })
               ],
             ),
           ),
@@ -53,3 +71,4 @@ class TaskTile extends StatelessWidget {
     );
   }
 }
+
